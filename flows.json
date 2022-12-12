@@ -1,0 +1,474 @@
+[
+    {
+        "id": "085a0c0d18f0e08d",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "7a4084b3f64df32d",
+        "type": "comment",
+        "z": "085a0c0d18f0e08d",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "0409e0a3a3c99b93",
+        "type": "inject",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 220,
+        "wires": [
+            [
+                "e70d4d8d2807cf30"
+            ]
+        ]
+    },
+    {
+        "id": "6931860aaa51e37b",
+        "type": "csv",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "crop,moisture,temp,pump,",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 550,
+        "y": 220,
+        "wires": [
+            [
+                "b5cdf3df191c4184"
+            ]
+        ]
+    },
+    {
+        "id": "011f957fa56693a3",
+        "type": "debug",
+        "z": "085a0c0d18f0e08d",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "473dcae3ec929926",
+        "type": "mqtt out",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "topic": "csv_data",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "ea4f86d59a7a723e",
+        "x": 720,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e30bc6f9d249cf9e",
+        "type": "mqtt in",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "topic": "csv_data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ea4f86d59a7a723e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 280,
+        "y": 440,
+        "wires": [
+            [
+                "2fa0a582f5771ebe",
+                "829cbf1ca87e4bd4",
+                "2769cfec79400601",
+                "e43c408a75c7123f"
+            ]
+        ]
+    },
+    {
+        "id": "e70d4d8d2807cf30",
+        "type": "file in",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "filename": "/data.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 400,
+        "y": 220,
+        "wires": [
+            [
+                "6931860aaa51e37b"
+            ]
+        ]
+    },
+    {
+        "id": "2fa0a582f5771ebe",
+        "type": "debug",
+        "z": "085a0c0d18f0e08d",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "5fc9ad94771c512c",
+        "type": "json",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "1e8a02ad9138e93b"
+            ]
+        ]
+    },
+    {
+        "id": "b5cdf3df191c4184",
+        "type": "delay",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "5",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": true,
+        "outputs": 1,
+        "x": 730,
+        "y": 220,
+        "wires": [
+            [
+                "5fc9ad94771c512c"
+            ]
+        ]
+    },
+    {
+        "id": "1e8a02ad9138e93b",
+        "type": "function",
+        "z": "085a0c0d18f0e08d",
+        "name": "function(Add time)",
+        "func": "var now = new Date();\n\nvar payload = JSON.parse(msg.payload);\n\nvar now = new Date(); \nvar year = now.getFullYear(); \nvar month = now.getMonth() + 1; \nvar day = now.getDate(); \nvar hour = now.getHours(); \nvar minute = now.getMinutes(); \nvar second = now.getSeconds(); \nmsg.timestamp = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;\n\npayload[\"day\"] = year + '-' + month + '-' + day;\npayload[\"time\"] = hour + ':' + minute + ':' + second;\nmsg.columns+=\",day,time\";\n// msg.payload = payload;\nmsg.payload = JSON.stringify(payload);\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "011f957fa56693a3",
+                "473dcae3ec929926"
+            ]
+        ]
+    },
+    {
+        "id": "829cbf1ca87e4bd4",
+        "type": "change",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.moisture",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 500,
+        "wires": [
+            [
+                "1e03f86b66a25850"
+            ]
+        ]
+    },
+    {
+        "id": "1e03f86b66a25850",
+        "type": "ui_chart",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "group": "3f67a69c7e961301",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Moisture",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "1",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 660,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2769cfec79400601",
+        "type": "change",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temp",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 560,
+        "wires": [
+            [
+                "88b002aabd760bfd"
+            ]
+        ]
+    },
+    {
+        "id": "88b002aabd760bfd",
+        "type": "ui_chart",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "group": "3f67a69c7e961301",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "1",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#77bb41",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#be38f3",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 670,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e43c408a75c7123f",
+        "type": "tcp out",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "host": "192.168.29.10",
+        "port": "60107",
+        "beserver": "client",
+        "base64": false,
+        "end": false,
+        "tls": "",
+        "x": 530,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "9d825411efed1c88",
+        "type": "tcp in",
+        "z": "085a0c0d18f0e08d",
+        "name": "",
+        "server": "server",
+        "host": "",
+        "port": "60107",
+        "datamode": "stream",
+        "datatype": "buffer",
+        "newline": "",
+        "topic": "",
+        "trim": false,
+        "base64": false,
+        "tls": "",
+        "x": 220,
+        "y": 780,
+        "wires": [
+            [
+                "d1e06471ee2e42f2"
+            ]
+        ]
+    },
+    {
+        "id": "d1e06471ee2e42f2",
+        "type": "debug",
+        "z": "085a0c0d18f0e08d",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "ea4f86d59a7a723e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "3f67a69c7e961301",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "0055fc819889958e",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0055fc819889958e",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
